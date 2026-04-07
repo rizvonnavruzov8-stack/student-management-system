@@ -46,7 +46,16 @@ public class Student extends BaseEntity {
 
     public void addCourse(Course course) {
         if (course != null) {
-            this.courses.add(course);
+            boolean exists = false;
+            for (Course c : this.courses) {
+                if (c.getCourseId() == course.getCourseId()) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                this.courses.add(course);
+            }
         }
     }
 
