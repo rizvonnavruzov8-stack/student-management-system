@@ -1,4 +1,4 @@
-package com.sms.model;
+package com.sms.core;
 
 public class Course {
     private String courseId;

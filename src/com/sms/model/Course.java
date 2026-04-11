@@ -1,6 +1,19 @@
 package com.sms.model;
 
+/**
+ * 🎓 EXPLANATION: Course (Data Class)
+ * 
+ * 1. REPRESENTATION:
+ *    Represents an academic subject that students can enroll in.
+ * 
+ * 2. WHY IT EXISTS:
+ *    To store course details like name and credit hours.
+ * 
+ * 3. OOP CONCEPTS USED:
+ *    - ENCAPSULATION: All fields are private, with standard public getters and setters.
+ */
 public class Course {
+    
     private int courseId;
     private String courseName;
     private int credits;
