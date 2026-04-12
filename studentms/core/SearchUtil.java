@@ -1,6 +1,4 @@
-package com.sms.util;
-
-import com.sms.model.Student;
+package core;
 import java.util.List;
 
 public class SearchUtil {
@@ -12,7 +10,7 @@ public class SearchUtil {
      * @param index The current index to check (initially 0)
      * @return The Student if found, otherwise null
      */
-    public static Student recursiveSearch(List<Student> students, int targetId, int index) {
+    public static Student recursiveSearch(List<Student> students, String targetId, int index) {
         // Base case: out of bounds or empty list
         if (students == null || index < 0 || index >= students.size()) {
             return null;
@@ -21,7 +19,7 @@ public class SearchUtil {
         Student current = students.get(index);
 
         // Base case: Match found
-        if (current != null && current.getId() == targetId) {
+        if (current != null && current.getId().equals(targetId)) {
             return current;
         }
 

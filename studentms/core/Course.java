@@ -1,4 +1,4 @@
-package com.sms.core;
+package core;
 
 public class Course {
     private String courseId;

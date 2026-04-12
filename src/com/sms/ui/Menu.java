@@ -142,11 +142,21 @@ public class Menu {
     private void addStudent() {
         int id = InputHandler.readInt("Enter ID: ");
         String name = InputHandler.readString("Enter Name: ");
+        String surname = InputHandler.readString("Enter Surname: ");
+        String email = InputHandler.readString("Enter Email: ");
+        String gender = InputHandler.readString("Enter Gender: ");
+        double gpa = InputHandler.readDouble("Enter GPA (0.0 - 4.0): ");
         boolean isGrad = InputHandler.readString("Is Graduate? (y/n): ").equalsIgnoreCase("y");
         
-        Student s = isGrad ? new GraduateStudent(id, name, 0, "Pending") : new Student(id, name, 0);
+        Student s;
+        if (isGrad) {
+            String thesis = InputHandler.readString("Enter Thesis Topic: ");
+            s = new GraduateStudent(id, name, surname, email, gender, gpa, thesis);
+        } else {
+            s = new Student(id, name, surname, email, gender, gpa);
+        }
         studentService.addStudent(s);
-        Logger.log("Added student: " + name);
+        Logger.log("Added student: " + name + " " + surname);
     }
 
     private void addCourse() {

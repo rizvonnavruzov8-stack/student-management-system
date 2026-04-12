@@ -1,7 +1,4 @@
-package com.sms.service.impl;
-
-import com.sms.model.Course;
-import com.sms.service.CourseService;
+package core;
 import com.sms.exception.InvalidGradeException;
 import com.sms.exception.StudentNotFoundException;
 

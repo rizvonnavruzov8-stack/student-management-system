@@ -16,10 +16,17 @@ import com.sms.util.Logger;
  */
 public class Main {
     public static void main(String[] args) {
-        Logger.log("System starting up...");
-        System.out.println("Initializing Student Management System...");
-        
-        Menu menu = new Menu();
-        menu.start();
+        if (args.length > 0 && args[0].equalsIgnoreCase("--cli")) {
+            Logger.log("System starting up (CLI)...");
+            System.out.println("Initializing Student Management System (CLI)...");
+            Menu menu = new Menu();
+            menu.start();
+        } else {
+            Logger.log("System starting up (GUI)...");
+            System.out.println("Initializing Student Management System (GUI)...");
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                new com.sms.ui.StudentManagementGUI().setVisible(true);
+            });
+        }
     }
 }

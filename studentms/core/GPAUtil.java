@@ -1,4 +1,4 @@
-package com.sms.util;
+package core;
 
 public class GPAUtil {
 

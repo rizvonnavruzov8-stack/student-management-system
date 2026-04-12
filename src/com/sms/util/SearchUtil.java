@@ -52,4 +52,24 @@ public class SearchUtil {
         // RECURSIVE STEP: Look in the next position
         return searchRecursive(students, id, index + 1);
     }
+
+    /**
+     * Searches for students matching a query (by ID, Name, or Surname).
+     * @param students List of students to search
+     * @param query Search query
+     * @return List of matching students
+     */
+    public static java.util.List<Student> searchStudents(java.util.List<Student> students, String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return new java.util.ArrayList<>(students);
+        }
+
+        String lowerQuery = query.toLowerCase().trim();
+        return students.stream()
+                .filter(s -> String.valueOf(s.getId()).contains(lowerQuery) ||
+                             s.getName().toLowerCase().contains(lowerQuery) ||
+                             (s.getSurname() != null && s.getSurname().toLowerCase().contains(lowerQuery)) ||
+                             (s.getEmail() != null && s.getEmail().toLowerCase().contains(lowerQuery)))
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

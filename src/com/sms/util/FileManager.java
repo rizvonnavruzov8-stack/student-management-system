@@ -42,6 +42,9 @@ public class FileManager {
                 StringBuilder sb = new StringBuilder();
                 sb.append(s.getId()).append(",")
                   .append(s.getName()).append(",")
+                  .append(s.getSurname()).append(",")
+                  .append(s.getEmail()).append(",")
+                  .append(s.getGender()).append(",")
                   .append(s.getGpa()).append(",");
                 
                 if (s instanceof GraduateStudent) {
@@ -77,19 +80,22 @@ public class FileManager {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length >= 6) {
+                if (parts.length >= 9) {
                     int id = Integer.parseInt(parts[0]);
                     String name = parts[1];
-                    double gpa = Double.parseDouble(parts[2]);
-                    boolean isGraduate = Boolean.parseBoolean(parts[3]);
-                    String thesis = parts[4];
-                    String gradesPart = parts[5];
+                    String surname = parts[2];
+                    String email = parts[3];
+                    String gender = parts[4];
+                    double gpa = Double.parseDouble(parts[5]);
+                    boolean isGraduate = Boolean.parseBoolean(parts[6]);
+                    String thesis = parts[7];
+                    String gradesPart = parts[8];
 
                     Student s;
                     if (isGraduate) {
-                        s = new GraduateStudent(id, name, gpa, thesis);
+                        s = new GraduateStudent(id, name, surname, email, gender, gpa, thesis);
                     } else {
-                        s = new Student(id, name, gpa);
+                        s = new Student(id, name, surname, email, gender, gpa);
                     }
 
                     // Load grades

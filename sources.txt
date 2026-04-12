@@ -9,6 +9,7 @@ src/com/sms/util/SortUtil.java
 src/com/sms/util/Logger.java
 src/com/sms/util/FileManager.java
 src/com/sms/util/AuthUtil.java
+src/com/sms/ui/StudentManagementGUI.java
 src/com/sms/ui/Menu.java
 src/com/sms/ui/InputHandler.java
 src/com/sms/model/GraduateStudent.java

@@ -21,6 +21,9 @@ import java.util.List;
 public class Student extends BaseEntity {
     
     private String name;
+    private String surname;
+    private String email;
+    private String gender;
     private double gpa;
     
     // Using List<Course> instead of Arrays for dynamic sizing and easier manipulation
@@ -33,9 +36,12 @@ public class Student extends BaseEntity {
         this.grades = new ArrayList<>();
     }
 
-    public Student(int id, String name, double gpa) {
+    public Student(int id, String name, String surname, String email, String gender, double gpa) {
         super(id);
         this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.gender = gender;
         this.gpa = gpa;
         this.courses = new ArrayList<>();
         this.grades = new ArrayList<>();
@@ -49,12 +55,40 @@ public class Student extends BaseEntity {
         this.name = name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public double getGpa() {
         return gpa;
     }
 
     public void setGpa(double gpa) {
-        this.gpa = gpa;
+        if (gpa >= 0.0 && gpa <= 4.0) {
+            this.gpa = gpa;
+        } else {
+            System.out.println("Invalid GPA value. Must be between 0.0 and 4.0.");
+        }
     }
 
     public List<Course> getCourses() {
@@ -125,6 +159,9 @@ public class Student extends BaseEntity {
         return "Student{" +
                 "id=" + getId() +
                 ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
                 ", gpa=" + gpa +
                 ", courses=" + courses +
                 '}';

@@ -1,6 +1,4 @@
-package com.sms.util;
-
-import com.sms.model.Student;
+package core;
 import java.util.List;
 
 public class SortUtil {

@@ -66,6 +66,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
+     * Searches students by a query string.
+     * @param query The search query (ID, Name, or Surname)
+     * @return List of matching students
+     */
+    public List<Student> searchStudents(String query) {
+        return SearchUtil.searchStudents(this.students, query);
+    }
+
+    /**
      * Helper method to get the full list of students.
      * @return List of all students
      */

@@ -10,4 +10,11 @@ public interface StudentService {
     void updateStudent(Student student);
     Student findStudentById(int id) throws StudentNotFoundException;
     List<Student> getAllStudents();
+
+    /**
+     * Searches for students by a query string.
+     * @param query The search query
+     * @return List of matching students
+     */
+    List<Student> searchStudents(String query);
 }

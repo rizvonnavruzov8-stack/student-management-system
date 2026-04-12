@@ -21,8 +21,8 @@ public class GraduateStudent extends Student {
         super();
     }
 
-    public GraduateStudent(int id, String name, double gpa, String thesisTopic) {
-        super(id, name, gpa);
+    public GraduateStudent(int id, String name, String surname, String email, String gender, double gpa, String thesisTopic) {
+        super(id, name, surname, email, gender, gpa);
         this.thesisTopic = thesisTopic;
     }
 
