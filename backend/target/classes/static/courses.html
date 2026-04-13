@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SMS — Courses</title>
+  <link rel="stylesheet" href="css/app.css"/>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-logo"><span>🎓</span> SMS</div>
+  <a class="nav-link" href="index.html"><span class="icon">📊</span> Dashboard</a>
+  <a class="nav-link" href="students.html"><span class="icon">👤</span> Students</a>
+  <a class="nav-link active" href="courses.html"><span class="icon">📚</span> Courses</a>
+  <a class="nav-link" href="enrollment.html"><span class="icon">📝</span> Enrollment</a>
+</nav>
+
+<main class="main">
+  <div class="page-header">
+    <h1>📚 Courses</h1>
+    <p>Manage available courses</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search course name or code…"/>
+    </div>
+    <button class="btn btn-primary" id="btn-add">+ Add Course</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Course Code</th><th>Course Name</th>
+            <th>Credits</th><th>Instructor</th>
+          </tr>
+        </thead>
+        <tbody id="courses-body"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Add Modal -->
+<div class="modal-overlay" id="course-modal">
+  <div class="modal">
+    <h2>Add Course</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Course ID *</label>
+        <input class="form-control" id="c-id" placeholder="CS-101"/>
+      </div>
+      <div class="form-group">
+        <label>Course Code *</label>
+        <input class="form-control" id="c-code" placeholder="CS101"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Course Name *</label>
+      <input class="form-control" id="c-name" placeholder="Introduction to Programming"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Credits</label>
+        <input class="form-control" id="c-credits" type="number" value="3" min="1" max="10"/>
+      </div>
+      <div class="form-group">
+        <label>Instructor</label>
+        <input class="form-control" id="c-instructor" placeholder="Dr. Smith"/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-edit" onclick="closeModal('course-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCourse()">Add Course</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toasts"></div>
+<script src="js/app.js"></script>
+<script>
+let allCourses = [];
+
+document.getElementById('search-input').addEventListener('input', renderTable);
+document.getElementById('btn-add').addEventListener('click', () => openModal('course-modal'));
+
+async function loadCourses() {
+  try {
+    allCourses = await api('/api/courses');
+    renderTable();
+  } catch(e) { toast('Failed to load courses', 'error'); }
+}
+
+function renderTable() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const data = allCourses.filter(c =>
+    (c.courseName + c.courseCode + c.instructorName).toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('courses-body');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No courses found.</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(c => `<tr>
+    <td>${c.id}</td>
+    <td><code style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;">${c.courseId}</code></td>
+    <td>${c.courseName}</td>
+    <td>${c.credits} cr</td>
+    <td>${c.instructorName}</td>
+  </tr>`).join('');
+}
+
+async function saveCourse() {
+  const payload = {
+    courseId:       document.getElementById('c-id').value.trim(),
+    courseCode:     document.getElementById('c-code').value.trim(),
+    courseName:     document.getElementById('c-name').value.trim(),
+    credits:        parseInt(document.getElementById('c-credits').value),
+    instructorName: document.getElementById('c-instructor').value.trim(),
+    type:           'course'
+  };
+  try {
+    await api('/api/courses', 'POST', payload);
+    toast('Course added!');
+    closeModal('course-modal');
+    await loadCourses();
+  } catch(e) { toast(e.message || 'Error adding course', 'error'); }
+}
+
+loadCourses();
+</script>
+</body>
+</html>
