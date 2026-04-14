@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SMS — Enrollment</title>
+  <link rel="stylesheet" href="css/app.css"/>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-logo"><span>🎓</span> SMS</div>
+  <a class="nav-link" href="index.html"><span class="icon">📊</span> Dashboard</a>
+  <a class="nav-link" href="students.html"><span class="icon">👤</span> Students</a>
+  <a class="nav-link" href="courses.html"><span class="icon">📚</span> Courses</a>
+  <a class="nav-link active" href="enrollment.html"><span class="icon">📝</span> Enrollment</a>
+</nav>
+
+<main class="main">
+  <div class="page-header">
+    <h1>📝 Enrollment</h1>
+    <p>Enroll students in courses and assign grades</p>
+  </div>
+
+  <!-- Enroll Form -->
+  <div class="card" style="margin-bottom:24px;">
+    <h2 style="font-size:1rem;font-weight:600;margin-bottom:18px;">Enroll a Student</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Student</label>
+        <select class="form-control" id="enroll-student"></select>
+      </div>
+      <div class="form-group">
+        <label>Course</label>
+        <select class="form-control" id="enroll-course"></select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="doEnroll()">Enroll</button>
+  </div>
+
+  <!-- Enrollments Table -->
+  <div class="card">
+    <h2 style="font-size:1rem;font-weight:600;margin-bottom:18px;">All Enrollments</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Enrollment #</th><th>Student</th><th>Course</th>
+            <th>Date</th><th>Grade</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="enrollments-body"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Grade Modal -->
+<div class="modal-overlay" id="grade-modal">
+  <div class="modal" style="max-width:360px;">
+    <h2>Assign Grade</h2>
+    <p style="color:var(--muted);margin-bottom:20px;font-size:0.875rem;">Enter a grade between 0 and 100.</p>
+    <input type="hidden" id="grade-enrollment-id"/>
+    <div class="form-group">
+      <label>Grade (0–100)</label>
+      <input class="form-control" id="grade-value" type="number" min="0" max="100" step="0.5" placeholder="85.0"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-edit" onclick="closeModal('grade-modal')">Cancel</button>
+      <button class="btn btn-success" onclick="submitGrade()">Assign</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toasts"></div>
+<script src="js/app.js"></script>
+<script>
+let students = [], courses = [], enrollments = [];
+
+async function loadAll() {
+  [students, courses, enrollments] = await Promise.all([
+    api('/api/students'),
+    api('/api/courses'),
+    api('/api/enrollments')
+  ]);
+  populateDropdowns();
+  renderTable();
+}
+
+function populateDropdowns() {
+  const sSelect = document.getElementById('enroll-student');
+  sSelect.innerHTML = students.map(s => `<option value="${s.id}">${s.firstName} ${s.lastName} (${s.studentId})</option>`).join('');
+  const cSelect = document.getElementById('enroll-course');
+  cSelect.innerHTML = courses.map(c => `<option value="${c.id}">${c.courseName} (${c.courseId})</option>`).join('');
+}
+
+function renderTable() {
+  const tbody = document.getElementById('enrollments-body');
+  if (!enrollments.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No enrollments yet.</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = enrollments.map(e => {
+    const s = students.find(x => x.id === e.studentDbId);
+    const c = courses.find(x => x.id === e.courseDbId);
+    const grade = e.grade < 0 ? '<span style="color:var(--muted)">—</span>' :
+      `<span style="color:${e.grade >= 60 ? 'var(--green)' : 'var(--red)'}; font-weight:600;">${e.grade}</span>`;
+    return `<tr>
+      <td>#${e.enrollmentId}</td>
+      <td>${s ? s.firstName + ' ' + s.lastName : 'Unknown'}</td>
+      <td>${c ? c.courseName : 'Unknown'}</td>
+      <td>${e.enrollmentDate}</td>
+      <td>${grade}</td>
+      <td><button class="btn btn-success btn-sm" onclick="openGradeModal(${e.enrollmentId})">+ Grade</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function doEnroll() {
+  const studentDbId = parseInt(document.getElementById('enroll-student').value);
+  const courseDbId  = parseInt(document.getElementById('enroll-course').value);
+  if (!studentDbId || !courseDbId) { toast('Select student and course', 'error'); return; }
+  try {
+    await api('/api/enrollments', 'POST', { studentDbId, courseDbId });
+    toast('Enrolled successfully!');
+    await loadAll();
+  } catch(e) { toast(e.message || 'Enrollment failed', 'error'); }
+}
+
+function openGradeModal(enrollmentId) {
+  document.getElementById('grade-enrollment-id').value = enrollmentId;
+  document.getElementById('grade-value').value = '';
+  openModal('grade-modal');
+}
+
+async function submitGrade() {
+  const enrollmentId = parseInt(document.getElementById('grade-enrollment-id').value);
+  const grade = parseFloat(document.getElementById('grade-value').value);
+  if (isNaN(grade)) { toast('Enter a valid grade', 'error'); return; }
+  try {
+    await api(`/api/enrollments/${enrollmentId}/grade`, 'PUT', { grade });
+    toast('Grade assigned! GPA updated.');
+    closeModal('grade-modal');
+    await loadAll();
+  } catch(e) { toast(e.message || 'Grade assignment failed', 'error'); }
+}
+
+loadAll();
+</script>
+</body>
+</html>

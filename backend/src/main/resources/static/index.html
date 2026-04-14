@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SMS — Dashboard</title>
+  <meta name="description" content="Student Management System Dashboard"/>
+  <link rel="stylesheet" href="css/app.css"/>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-logo"><span>🎓</span> SMS</div>
+  <a class="nav-link active" href="index.html"><span class="icon">📊</span> Dashboard</a>
+  <a class="nav-link" href="students.html"><span class="icon">👤</span> Students</a>
+  <a class="nav-link" href="courses.html"><span class="icon">📚</span> Courses</a>
+  <a class="nav-link" href="enrollment.html"><span class="icon">📝</span> Enrollment</a>
+</nav>
+
+<!-- Main -->
+<main class="main">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Welcome to the Student Management System</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid" id="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">👤</div>
+      <div>
+        <div class="stat-value" id="stat-students">—</div>
+        <div class="stat-label">Total Students</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">📚</div>
+      <div>
+        <div class="stat-value" id="stat-courses">—</div>
+        <div class="stat-label">Courses</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon purple">📝</div>
+      <div>
+        <div class="stat-value" id="stat-enrollments">—</div>
+        <div class="stat-label">Enrollments</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon yellow">⭐</div>
+      <div>
+        <div class="stat-value" id="stat-avg-gpa">—</div>
+        <div class="stat-label">Avg GPA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Students -->
+  <div class="card">
+    <h2 style="margin-bottom:18px;font-size:1rem;font-weight:600;">🏆 Top Students by GPA</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Name</th><th>Student ID</th><th>GPA</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="top-students-body">
+          <tr><td colspan="5" class="empty-state">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container" id="toasts"></div>
+<script src="js/app.js"></script>
+<script>
+  // Dashboard
+  async function loadDashboard() {
+    const [students, courses, enrollments] = await Promise.all([
+      api('/api/students'),
+      api('/api/courses'),
+      api('/api/enrollments')
+    ]);
+
+    document.getElementById('stat-students').textContent = students.length;
+    document.getElementById('stat-courses').textContent = courses.length;
+    document.getElementById('stat-enrollments').textContent = enrollments.length;
+
+    const avg = students.length
+      ? (students.reduce((s,x) => s + x.gpa, 0) / students.length).toFixed(2)
+      : '0.00';
+    document.getElementById('stat-avg-gpa').textContent = avg;
+
+    const sorted = [...students].sort((a,b) => b.gpa - a.gpa).slice(0, 5);
+    const tbody = document.getElementById('top-students-body');
+    if(!sorted.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><p>No students yet.</p></td></tr>';
+      return;
+    }
+    tbody.innerHTML = sorted.map((s, i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td>${s.firstName} ${s.lastName}</td>
+        <td>${s.studentId}</td>
+        <td>
+          ${s.gpa.toFixed(2)}
+          <span class="gpa-bar"><span class="gpa-bar-fill" style="width:${(s.gpa / 4) * 100}%"></span></span>
+        </td>
+        <td><span class="badge badge-${(s.status||'').toLowerCase()}">${s.status||'—'}</span></td>
+      </tr>
+    `).join('');
+  }
+  loadDashboard();
+</script>
+</body>
+</html>
