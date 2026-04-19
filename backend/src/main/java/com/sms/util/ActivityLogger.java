@@ -23,7 +23,7 @@ public class ActivityLogger {
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public void log(String action, String detail) {
-        String entry = "[" + LocalDateTime.now().format(FORMATTER) + "] "
+        String entry = "[" + LocalDateTime.now().format(    FORMATTER) + "] "
                        + action + " — " + detail;
         System.out.println(entry);
 

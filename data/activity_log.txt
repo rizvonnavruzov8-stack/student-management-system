@@ -1,16 +1,9 @@
-[2026-04-14 16:17:18] ADD_STUDENT — Added: Rizvon Navruzov (01) | GPA: 0.00
-[2026-04-14 16:17:30] ADD_COURSE — Added: vdsvdfba (132) | 3 credits | fdsaf
-[2026-04-14 16:17:32] ENROLL — Student ID=1 → Course ID=1
-[2026-04-14 16:17:35] ENROLL — Student ID=1 → Course ID=1
-[2026-04-14 16:17:47] GRADE — Enrollment ID=1 grade=78.0
-[2026-04-14 16:17:53] GRADE — Enrollment ID=2 grade=90.0
-[2026-04-14 16:18:38] ADD_STUDENT — Added: Diyor Davlatkhojaev (02) | GPA: 0.00
-[2026-04-14 16:18:57] ADD_STUDENT — Added: Aslan Aslan (03) | GPA: 0.00
-[2026-04-14 16:19:32] ADD_COURSE — Added: DBMS (133) | 6 credits | Nurlan
-[2026-04-14 16:19:40] ENROLL — Student ID=2 → Course ID=1
-[2026-04-14 16:19:46] ENROLL — Student ID=1 → Course ID=2
-[2026-04-14 16:19:50] ENROLL — Student ID=3 → Course ID=2
-[2026-04-14 16:19:58] GRADE — Enrollment ID=3 grade=98.0
-[2026-04-14 16:20:02] GRADE — Enrollment ID=4 grade=87.0
-[2026-04-14 16:20:06] GRADE — Enrollment ID=5 grade=98.0
-[2026-04-14 16:20:29] UPDATE_STUDENT — Updated ID=1
+[2026-04-17 23:38:50] ADD_STUDENT — Added: Rizvon Navruzov (01) | GPA: 0.00
+[2026-04-17 23:39:15] ADD_COURSE — Added: JAVA (132) | 6 credits | Ameen Khan
+[2026-04-17 23:39:21] ENROLL — Student ID=1 → Course ID=1
+[2026-04-17 23:39:26] GRADE — Enrollment ID=1 grade=87.0
+[2026-04-17 23:39:45] GRADE — Enrollment ID=1 grade=90.0
+[2026-04-19 11:41:13] DELETE_STUDENT — Deleted ID=1
+[2026-04-19 12:11:53] DELETE_COURSE — Deleted ID=1
+[2026-04-19 21:32:38] ADD_COURSE — Added: svd (3251) | 3 credits | vds
+[2026-04-19 21:32:41] DELETE_COURSE — Deleted ID=1

@@ -307,3 +307,24 @@ tbody td:first-child { font-weight: 600; }
 .gpa-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--green)); }
 .checkbox-row { display: flex; align-items: center; gap: 8px; }
 .checkbox-row input { width: auto; }
+
+/* ── Login ─────────────────────────────────────────────── */
+.login-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg) 0%, rgba(13,17,23,0.8) 100%);
+}
+.login-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.login-card h1 { margin-bottom: 8px; font-size: 1.5rem; }
+.login-card p { color: var(--muted); margin-bottom: 24px; }

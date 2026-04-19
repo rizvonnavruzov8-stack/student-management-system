@@ -36,7 +36,7 @@
         <thead>
           <tr>
             <th>ID</th><th>Course Code</th><th>Course Name</th>
-            <th>Credits</th><th>Instructor</th>
+            <th>Credits</th><th>Instructor</th><th>Actions</th>
           </tr>
         </thead>
         <tbody id="courses-body"></tbody>
@@ -75,7 +75,7 @@
     </div>
     <div class="modal-actions">
       <button class="btn btn-edit" onclick="closeModal('course-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCourse()">Add Course</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveCourse()">Save</button>
     </div>
   </div>
 </div>
@@ -84,9 +84,10 @@
 <script src="js/app.js"></script>
 <script>
 let allCourses = [];
+let editingId = null;
 
 document.getElementById('search-input').addEventListener('input', renderTable);
-document.getElementById('btn-add').addEventListener('click', () => openModal('course-modal'));
+document.getElementById('btn-add').addEventListener('click', openAddModal);
 
 async function loadCourses() {
   try {
@@ -98,11 +99,11 @@ async function loadCourses() {
 function renderTable() {
   const q = document.getElementById('search-input').value.toLowerCase();
   const data = allCourses.filter(c =>
-    (c.courseName + c.courseCode + c.instructorName).toLowerCase().includes(q)
+    (c.courseName + c.courseCode + c.instructorName + c.courseId).toLowerCase().includes(q)
   );
   const tbody = document.getElementById('courses-body');
   if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No courses found.</p></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No courses found.</p></div></td></tr>';
     return;
   }
   tbody.innerHTML = data.map(c => `<tr>
@@ -111,7 +112,33 @@ function renderTable() {
     <td>${c.courseName}</td>
     <td>${c.credits} cr</td>
     <td>${c.instructorName}</td>
+    <td style="display:flex;gap:6px;">
+      <button class="btn btn-edit btn-sm" onclick="openEditModal(${c.id})">Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCourse(${c.id})">Delete</button>
+    </td>
   </tr>`).join('');
+}
+
+function openAddModal() {
+  editingId = null;
+  document.querySelector('#course-modal h2').textContent = 'Add Course';
+  document.getElementById('modal-save-btn').textContent = 'Add Course';
+  clearForm();
+  openModal('course-modal');
+}
+
+function openEditModal(id) {
+  editingId = id;
+  const c = allCourses.find(x => x.id === id);
+  if (!c) return;
+  document.querySelector('#course-modal h2').textContent = 'Edit Course';
+  document.getElementById('modal-save-btn').textContent = 'Update Course';
+  document.getElementById('c-id').value = c.courseId || '';
+  document.getElementById('c-code').value = c.courseCode || '';
+  document.getElementById('c-name').value = c.courseName || '';
+  document.getElementById('c-credits').value = c.credits || 3;
+  document.getElementById('c-instructor').value = c.instructorName || '';
+  openModal('course-modal');
 }
 
 async function saveCourse() {
@@ -124,11 +151,31 @@ async function saveCourse() {
     type:           'course'
   };
   try {
-    await api('/api/courses', 'POST', payload);
-    toast('Course added!');
+    if (editingId) {
+      await api(`/api/courses/${editingId}`, 'PUT', payload);
+      toast('Course updated!');
+    } else {
+      await api('/api/courses', 'POST', payload);
+      toast('Course added!');
+    }
     closeModal('course-modal');
     await loadCourses();
-  } catch(e) { toast(e.message || 'Error adding course', 'error'); }
+  } catch(e) { toast(e.message || 'Error saving course', 'error'); }
+}
+
+async function deleteCourse(id) {
+  if (!confirm('Delete this course? All associated enrollments might be affected.')) return;
+  try {
+    await api(`/api/courses/${id}`, 'DELETE');
+    toast('Course deleted.');
+    await loadCourses();
+  } catch(e) { toast(e.message || 'Delete failed', 'error'); }
+}
+
+function clearForm() {
+  ['c-id', 'c-code', 'c-name', 'c-credits', 'c-instructor']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('c-credits').value = 3;
 }
 
 loadCourses();

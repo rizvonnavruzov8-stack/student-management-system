@@ -13,7 +13,7 @@ public class Course extends BaseEntity {
     private int credits;
     private String instructorName;
 
-    // --- Constructors ---
+    // Constructors
 
     public Course() {
         super();
@@ -35,22 +35,32 @@ public class Course extends BaseEntity {
         return courseName + " (" + courseCode + ") | " + credits + " credits | " + instructorName;
     }
 
-    // --- Getters & Setters ---
+    // Getters & Setters
 
-    public String getCourseId() { return courseId; }
-    public void setCourseId(String courseId) { this.courseId = courseId; }
+    public String getCourseId() {
+        return courseId; }
+    public void setCourseId(String courseId) {
+        this.courseId = courseId; }
 
-    public String getCourseName() { return courseName; }
-    public void setCourseName(String courseName) { this.courseName = courseName; }
+    public String getCourseName() {
+        return courseName; }
+    public void setCourseName(String courseName) {
+        this.courseName = courseName; }
 
-    public String getCourseCode() { return courseCode; }
-    public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
+    public String getCourseCode() {
+        return courseCode; }
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode; }
 
-    public int getCredits() { return credits; }
-    public void setCredits(int credits) { this.credits = credits; }
+    public int getCredits() {
+        return credits; }
+    public void setCredits(int credits) {
+        this.credits = credits; }
 
-    public String getInstructorName() { return instructorName; }
-    public void setInstructorName(String instructorName) { this.instructorName = instructorName; }
+    public String getInstructorName() {
+        return instructorName; }
+    public void setInstructorName(String instructorName) {
+        this.instructorName = instructorName; }
 
     @Override
     public String toString() {

@@ -27,6 +27,7 @@ public class EnrollmentController {
     /** GET /api/enrollments */
     @GetMapping
     public List<Enrollment> getAll() {
+
         return enrollmentService.getAllEnrollments();
     }
 
@@ -53,5 +54,12 @@ public class EnrollmentController {
             throws InvalidGradeException, StudentNotFoundException {
         double grade = body.get("grade");
         return ResponseEntity.ok(enrollmentService.assignGrade(enrollmentId, grade));
+    }
+
+    /** DELETE /api/enrollments/{enrollmentId} — unenroll student */
+    @DeleteMapping("/{enrollmentId}")
+    public ResponseEntity<Void> delete(@PathVariable int enrollmentId) throws StudentNotFoundException {
+        enrollmentService.deleteEnrollment(enrollmentId);
+        return ResponseEntity.noContent().build();
     }
 }

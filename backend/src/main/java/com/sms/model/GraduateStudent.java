@@ -12,7 +12,7 @@ public class GraduateStudent extends Student {
     private String researchTopic;
     private String supervisorName;
 
-    // --- Constructors ---
+    // Constructors
 
     public GraduateStudent() {
         super();
@@ -34,13 +34,17 @@ public class GraduateStudent extends Student {
                " (Supervisor: " + supervisorName + ") [GRADUATE]";
     }
 
-    // --- Getters & Setters ---
+    // Getters & Setters
 
-    public String getResearchTopic() { return researchTopic; }
-    public void setResearchTopic(String researchTopic) { this.researchTopic = researchTopic; }
+    public String getResearchTopic() {
+        return researchTopic; }
+    public void setResearchTopic(String researchTopic) {
+        this.researchTopic = researchTopic; }
 
-    public String getSupervisorName() { return supervisorName; }
-    public void setSupervisorName(String supervisorName) { this.supervisorName = supervisorName; }
+    public String getSupervisorName() {
+        return supervisorName; }
+    public void setSupervisorName(String supervisorName) {
+        this.supervisorName = supervisorName; }
 
     @Override
     public String toString() {

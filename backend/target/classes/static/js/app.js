@@ -28,6 +28,21 @@ async function api(path, method = 'GET', body = null) {
 }
 
 /**
+ * Check if user is logged in
+ */
+function isLoggedIn() {
+  return localStorage.getItem('user') !== null;
+}
+
+/**
+ * Logout
+ */
+function logout() {
+  localStorage.removeItem('user');
+  window.location.href = 'login.html';
+}
+
+/**
  * Toast notification
  * @param {string} message
  * @param {'success'|'error'} type
@@ -62,6 +77,25 @@ function closeModal(id) {
 
 // Close modals when clicking the overlay background
 document.addEventListener('DOMContentLoaded', () => {
+  // Check login for protected pages
+  const protectedPages = ['index.html', 'students.html', 'courses.html', 'enrollment.html'];
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  if (protectedPages.includes(currentPage) && !isLoggedIn()) {
+    window.location.href = 'login.html';
+  }
+
+  // Add logout to sidebar if logged in
+  if (isLoggedIn()) {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      const logoutBtn = document.createElement('a');
+      logoutBtn.className = 'nav-link';
+      logoutBtn.innerHTML = '<span class="icon">🚪</span> Logout';
+      logoutBtn.onclick = logout;
+      sidebar.appendChild(logoutBtn);
+    }
+  }
+
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', e => {
       if (e.target === overlay) overlay.classList.remove('open');

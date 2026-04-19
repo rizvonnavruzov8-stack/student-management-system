@@ -26,8 +26,17 @@ public interface StudentService {
     /** Search by student-code string (e.g. "STU-001") */
     Student findStudentByCode(String studentId) throws StudentNotFoundException;
 
-    /** Recursive search — must be used in real system logic */
+    /**
+     * RECURSION — mandatory recursive search.
+     * Must be used in real system logic (not a dummy method).
+     */
     Student findStudentByIdRecursive(List<Student> list, int id, int index) throws StudentNotFoundException;
 
     List<Student> sortByGpa();
+
+    /** Called by FileManager on startup to restore persisted data */
+    void loadStudents(List<Student> loaded);
+
+    /** Returns the live list reference — used internally by EnrollmentServiceImpl */
+    List<Student> getStudentsRef();
 }

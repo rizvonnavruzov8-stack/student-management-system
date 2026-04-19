@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Student extends BaseEntity {
 
-    private String studentId;   // e.g. "STU-001"
+    private String studentId;
     private String firstName;
     private String lastName;
     private String email;
@@ -21,7 +21,7 @@ public class Student extends BaseEntity {
     private double gpa;
     private List<Double> grades = new ArrayList<>();
 
-    // --- Constructors ---
+    // Constructors
 
     public Student() {
         super();
@@ -45,7 +45,7 @@ public class Student extends BaseEntity {
         return firstName + " " + lastName + " (" + studentId + ") | GPA: " + String.format("%.2f", gpa);
     }
 
-    // --- Getters & Setters ---
+    // Getters & Setters
 
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
@@ -57,7 +57,12 @@ public class Student extends BaseEntity {
     public void setLastName(String lastName) { this.lastName = lastName; }
 
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("Invalid email format: " + email);
+        }
+        this.email = email;
+    }
 
     public String getDateOfBirth() { return dateOfBirth; }
     public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
@@ -71,7 +76,7 @@ public class Student extends BaseEntity {
     public List<Double> getGrades() { return grades; }
     public void setGrades(List<Double> grades) { this.grades = grades; }
 
-    // Helper: recalculate GPA from grades list
+    // Helper: recalculate GPA from grades list using university scale
     public void recalculateGpa() {
         if (grades == null || grades.isEmpty()) {
             this.gpa = 0.0;
@@ -79,9 +84,18 @@ public class Student extends BaseEntity {
         }
         double sum = 0;
         for (double g : grades) sum += g;
-        double average = sum / grades.size();
-        // Convert 0-100 scale to 0-4.0 scale
-        this.gpa = (average / 100.0) * 4.0;
+        double avg = sum / grades.size();
+
+        if (avg >= 90) this.gpa = 4.0;
+        else if (avg >= 85) this.gpa = 3.7;
+        else if (avg >= 80) this.gpa = 3.3;
+        else if (avg >= 75) this.gpa = 3.0;
+        else if (avg >= 70) this.gpa = 2.7;
+        else if (avg >= 65) this.gpa = 2.3;
+        else if (avg >= 60) this.gpa = 2.0;
+        else if (avg >= 55) this.gpa = 1.7;
+        else if (avg >= 50) this.gpa = 1.0;
+        else this.gpa = 0.0;
     }
 
     @Override

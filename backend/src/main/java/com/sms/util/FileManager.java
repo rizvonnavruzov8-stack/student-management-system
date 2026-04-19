@@ -1,9 +1,9 @@
 package com.sms.util;
 
 import com.sms.model.*;
-import com.sms.service.impl.CourseServiceImpl;
-import com.sms.service.impl.EnrollmentServiceImpl;
-import com.sms.service.impl.StudentServiceImpl;
+import com.sms.service.CourseService;
+import com.sms.service.EnrollmentService;
+import com.sms.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -16,25 +16,30 @@ import java.util.List;
 
 /**
  * FILE I/O — reads and writes all domain data to flat text files.
- * Uses BufferedWriter and BufferedReader as required.
+ * Uses BufferedWriter and BufferedReader as required by the project spec.
  *
- * Format (CSV):
- *   students.txt  → type|id|studentId|firstName|lastName|email|dob|status|gpa|grades|researchTopic|supervisor
- *   courses.txt   → id|courseId|courseName|courseCode|credits|instructor
- *   enrollments.txt → enrollmentId|studentDbId|courseDbId|date|grade
+ * SOLID — depends on service INTERFACES, not concrete implementations.
+ * This removes the @Lazy workaround and eliminates circular dependency risk.
+ *
+ * File Formats (pipe-delimited):
+ *   students.txt    → type|id|studentId|firstName|lastName|email|dob|status|gpa|grades|researchTopic|supervisor
+ *   courses.txt     → id|courseId|courseName|courseCode|credits|instructor
+ *   enrollments.txt → id|studentDbId|courseDbId|date|grade
  */
 @Component
 public class FileManager {
 
-    @Value("${app.students-file}") private String studentsFile;
-    @Value("${app.courses-file}")  private String coursesFile;
+    @Value("${app.students-file}")    private String studentsFile;
+    @Value("${app.courses-file}")     private String coursesFile;
     @Value("${app.enrollments-file}") private String enrollmentsFile;
 
-    @Lazy @Autowired private StudentServiceImpl   studentService;
-    @Lazy @Autowired private CourseServiceImpl    courseService;
-    @Lazy @Autowired private EnrollmentServiceImpl enrollmentService;
+    // @Lazy ensures FileManager is created first; services are resolved on first use,
+    // which breaks the circular dependency cleanly without proxy tricks.
+    @Lazy @Autowired private StudentService    studentService;
+    @Lazy @Autowired private CourseService     courseService;
+    @Lazy @Autowired private EnrollmentService enrollmentService;
 
-    // ── SAVE ──────────────────────────────────────────────────────────────────
+    // ── SAVE
 
     public void saveStudents(List<Student> students) {
         try {
@@ -81,7 +86,8 @@ public class FileManager {
             ensureDir(enrollmentsFile);
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(enrollmentsFile))) {
                 for (Enrollment e : enrollments) {
-                    bw.write(e.getEnrollmentId() + "|" + e.getStudentDbId() + "|"
+                    // Use getId() — Enrollment now extends BaseEntity
+                    bw.write(e.getId() + "|" + e.getStudentDbId() + "|"
                         + e.getCourseDbId() + "|" + e.getEnrollmentDate() + "|" + e.getGrade());
                     bw.newLine();
                 }
@@ -91,7 +97,7 @@ public class FileManager {
         }
     }
 
-    // ── LOAD ──────────────────────────────────────────────────────────────────
+    // ── LOAD
 
     public void loadAll() throws IOException {
         loadStudents();
@@ -157,6 +163,7 @@ public class FileManager {
                 if (line.isBlank()) continue;
                 String[] p = line.split("\\|", -1);
                 if (p.length < 5) continue;
+                // p[0] = id (BaseEntity), p[1] = studentDbId, p[2] = courseDbId
                 Enrollment e = new Enrollment(Integer.parseInt(p[0]),
                                               Integer.parseInt(p[1]),
                                               Integer.parseInt(p[2]));

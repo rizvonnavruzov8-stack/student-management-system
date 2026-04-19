@@ -5,7 +5,9 @@ import com.sms.exception.InvalidGradeException;
 import com.sms.exception.StudentNotFoundException;
 import com.sms.model.Enrollment;
 import com.sms.model.Student;
+import com.sms.service.CourseService;
 import com.sms.service.EnrollmentService;
+import com.sms.service.StudentService;
 import com.sms.util.FileManager;
 import com.sms.util.ActivityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import java.util.stream.Collectors;
 /**
  * POLYMORPHISM — Implements EnrollmentService interface.
  * EXCEPTION HANDLING — validates grades before assignment.
+ *
+ * Depends on StudentService and CourseService INTERFACES (not concrete classes)
+ * to follow SOLID dependency inversion principle.
  */
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
@@ -28,15 +33,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Autowired private FileManager fileManager;
     @Autowired private ActivityLogger activityLogger;
-    @Autowired private StudentServiceImpl studentService;
-    @Autowired private CourseServiceImpl courseService;
+    // Inject interfaces, not concrete implementations (SOLID — Dependency Inversion)
+    @Autowired private StudentService studentService;
+    @Autowired private CourseService courseService;
 
     @Override
     public Enrollment enrollStudent(int studentDbId, int courseDbId)
             throws StudentNotFoundException, CourseNotFoundException {
 
         // Validate both entities exist (throws if not found)
-        Student student = studentService.findStudentById(studentDbId);
+        studentService.findStudentById(studentDbId);
         courseService.findCourseById(courseDbId);
 
         Enrollment enrollment = new Enrollment(idCounter.getAndIncrement(), studentDbId, courseDbId);
@@ -56,11 +62,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         Enrollment enrollment = enrollments.stream()
-            .filter(e -> e.getEnrollmentId() == enrollmentId)
+            .filter(e -> e.getId() == enrollmentId)
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Enrollment not found: " + enrollmentId));
 
-        enrollment.setGrade(grade);
+        enrollment.setGrade(grade); // also updates updatedAt via touch()
 
         // Recalculate student GPA
         Student student = studentService.findStudentById(enrollment.getStudentDbId());
@@ -78,6 +84,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public void deleteEnrollment(int enrollmentId) throws StudentNotFoundException {
+        Enrollment enrollment = enrollments.stream()
+            .filter(e -> e.getId() == enrollmentId)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Enrollment not found: " + enrollmentId));
+
+        enrollments.remove(enrollment);
+
+        // Recalculate GPA after removal
+        Student student = studentService.findStudentById(enrollment.getStudentDbId());
+        List<Double> allGrades = enrollments.stream()
+            .filter(e -> e.getStudentDbId() == enrollment.getStudentDbId() && e.getGrade() >= 0)
+            .map(Enrollment::getGrade)
+            .collect(Collectors.toList());
+        student.setGrades(allGrades);
+        student.recalculateGpa();
+
+        fileManager.saveEnrollments(enrollments);
+        fileManager.saveStudents(studentService.getStudentsRef());
+        activityLogger.log("DELETE_ENROLLMENT", "Deleted enrollment ID=" + enrollmentId);
+    }
+
+    @Override
     public List<Enrollment> getStudentCourses(int studentDbId) {
         return enrollments.stream()
             .filter(e -> e.getStudentDbId() == studentDbId)
@@ -89,10 +118,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return new ArrayList<>(enrollments);
     }
 
+    @Override
     public void loadEnrollments(List<Enrollment> loaded) {
         enrollments.clear();
         enrollments.addAll(loaded);
-        int maxId = loaded.stream().mapToInt(Enrollment::getEnrollmentId).max().orElse(0);
+        int maxId = loaded.stream().mapToInt(Enrollment::getId).max().orElse(0);
         idCounter.set(maxId + 1);
     }
 }
