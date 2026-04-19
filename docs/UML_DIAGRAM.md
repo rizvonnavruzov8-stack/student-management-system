@@ -1,15 +1,22 @@
-# Project UML Diagram
+# Project UML Diagram — Exhaustive System Architecture
 
-This diagram visualizes the core architecture, inheritance hierarchy, and relationships between classes.
+This diagram visualizes the complete project architecture, including all layers: Models, Services, Controllers, Utilities, and Exception Handling.
 
 ```mermaid
 classDiagram
+    %% Entry Point
+    class StudentManagementApplication {
+        +main(args: String[]) void
+    }
+
+    %% Model Layer
     class BaseEntity {
         <<abstract>>
         -int id
         -LocalDateTime createdAt
         -LocalDateTime updatedAt
         +getSummary() String
+        +touch() void
     }
 
     class Student {
@@ -33,6 +40,7 @@ classDiagram
         -String courseId
         -String courseName
         -int credits
+        +getSummary() String
     }
 
     class Enrollment {
@@ -40,8 +48,10 @@ classDiagram
         -int studentDbId
         -int courseDbId
         -double grade
+        +getSummary() String
     }
 
+    %% Service Layer (Interfaces)
     class StudentService {
         <<interface>>
         +addStudent(Student) void
@@ -59,52 +69,97 @@ classDiagram
         <<interface>>
         +enrollStudent(int, int) void
         +assignGrade(int, double) void
+        +deleteEnrollment(int) void
     }
 
+    %% Service Layer (Implementations)
     class StudentServiceImpl {
         -List~Student~ students
-        +addStudent(Student) void
-        +findStudentById(int) Student
-        +sortByGpa() List~Student~
+        -AtomicInteger idCounter
         +findStudentByIdRecursive(int) Student
     }
 
     class CourseServiceImpl {
         -List~Course~ courses
-        +addCourse(Course) void
     }
 
     class EnrollmentServiceImpl {
         -List~Enrollment~ enrollments
-        +enrollStudent(int, int) void
     }
 
+    %% Controller Layer
+    class StudentController {
+        +getAllStudents() List
+        +getStudentById(int) Student
+    }
+
+    class CourseController {
+        +getAllCourses() List
+        +addCourse(Course) Course
+    }
+
+    class EnrollmentController {
+        +enroll(int, int) Enrollment
+    }
+
+    class AuthController {
+        +login(LoginRequest) ResponseEntity
+    }
+
+    %% Utility Layer
     class FileManager {
-        +saveStudents(List~Student~ students) void
-        +loadStudents() List~Student~
+        -String studentsFile
+        -String coursesFile
+        -String enrollmentsFile
+        +saveStudents(List) void
+        +loadAll() void
     }
 
     class ActivityLogger {
         +log(String action, String details) void
     }
 
-    class GlobalExceptionHandler {
-        +handleNotFound(Exception e) ResponseEntity~Object~
+    class AuthStore {
+        -Map~String, String~ credentials
+        +authenticate(String, String) boolean
     }
 
-    %% Relationships
+    %% Exception Layer
+    class GlobalExceptionHandler {
+        +handleNotFound(Exception) ResponseEntity
+    }
+
+    class StudentNotFoundException { }
+    class CourseNotFoundException { }
+    class InvalidGradeException { }
+
+    %% Relationships - Inheritance
     BaseEntity <|-- Student
     BaseEntity <|-- Course
     BaseEntity <|-- Enrollment
     Student <|-- GraduateStudent
     
+    %% Relationships - Implementation
     StudentService <|.. StudentServiceImpl
     CourseService <|.. CourseServiceImpl
     EnrollmentService <|.. EnrollmentServiceImpl
     
+    %% Relationships - Usage & Association
+    StudentController --> StudentService
+    CourseController --> CourseService
+    EnrollmentController --> EnrollmentService
+    AuthController --> AuthStore
+    
     StudentServiceImpl --> FileManager : uses
     StudentServiceImpl --> ActivityLogger : uses
+    
+    StudentManagementApplication ..> StudentService : entry
 ```
 
 ## Description from Diagram:
-This comprehensive diagram shows the inheritance hierarchy descending from `BaseEntity`, the implementation of multiple service interfaces, and the utility dependencies for persistence and logging.
+This comprehensive diagram covers the full stack of the Student Management System:
+- **Models**: Unified under `BaseEntity` for persistence tracking.
+- **Services**: Solid interface/implementation pattern using Spring `@Service`.
+- **Controllers**: REST entry points for frontend interaction.
+- **Persistence & Utils**: File-based I/O and activity logging.
+- **Exclusives**: Recursion in `StudentServiceImpl` and Custom Exception Handling.
