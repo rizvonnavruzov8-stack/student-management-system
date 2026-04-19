@@ -27,6 +27,7 @@ public class EnrollmentController {
     /** GET /api/enrollments */
     @GetMapping
     public List<Enrollment> getAll() {
+
         return enrollmentService.getAllEnrollments();
     }
 

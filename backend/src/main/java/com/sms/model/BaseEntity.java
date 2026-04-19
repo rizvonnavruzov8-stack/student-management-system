@@ -39,7 +39,7 @@ public abstract class BaseEntity {
     // ABSTRACTION: Subclasses must define how they display their core info
     public abstract String getSummary();
 
-    // --- Getters & Setters ---
+    // Getters & Setters
 
     public int getId() {
         return id; }

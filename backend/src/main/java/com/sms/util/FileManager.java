@@ -39,7 +39,7 @@ public class FileManager {
     @Lazy @Autowired private CourseService     courseService;
     @Lazy @Autowired private EnrollmentService enrollmentService;
 
-    // ── SAVE ──────────────────────────────────────────────────────────────────
+    // ── SAVE
 
     public void saveStudents(List<Student> students) {
         try {
@@ -97,7 +97,7 @@ public class FileManager {
         }
     }
 
-    // ── LOAD ──────────────────────────────────────────────────────────────────
+    // ── LOAD
 
     public void loadAll() throws IOException {
         loadStudents();

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Student extends BaseEntity {
 
-    private String studentId;   // e.g. "STU-001"
+    private String studentId;
     private String firstName;
     private String lastName;
     private String email;
@@ -21,7 +21,7 @@ public class Student extends BaseEntity {
     private double gpa;
     private List<Double> grades = new ArrayList<>();
 
-    // --- Constructors ---
+    // Constructors
 
     public Student() {
         super();
@@ -45,7 +45,7 @@ public class Student extends BaseEntity {
         return firstName + " " + lastName + " (" + studentId + ") | GPA: " + String.format("%.2f", gpa);
     }
 
-    // --- Getters & Setters ---
+    // Getters & Setters
 
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
@@ -86,11 +86,10 @@ public class Student extends BaseEntity {
         for (double g : grades) sum += g;
         double avg = sum / grades.size();
 
-        // 90-100=4.0, 85-90=3.7, 80-85=3.3, 75-80=3.0, 70-75=2.7, 65-70=2.3, 60-65=2.0, 55-60=1.7, 50-55=1.0, <50=0.0
         if (avg >= 90) this.gpa = 4.0;
         else if (avg >= 85) this.gpa = 3.7;
         else if (avg >= 80) this.gpa = 3.3;
-        else if (avg >= 75) this.gpa = 3.0; // User wrote 780, assumed typo for 80
+        else if (avg >= 75) this.gpa = 3.0;
         else if (avg >= 70) this.gpa = 2.7;
         else if (avg >= 65) this.gpa = 2.3;
         else if (avg >= 60) this.gpa = 2.0;

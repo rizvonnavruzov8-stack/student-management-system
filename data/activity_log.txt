@@ -4,3 +4,6 @@
 [2026-04-17 23:39:26] GRADE — Enrollment ID=1 grade=87.0
 [2026-04-17 23:39:45] GRADE — Enrollment ID=1 grade=90.0
 [2026-04-19 11:41:13] DELETE_STUDENT — Deleted ID=1
+[2026-04-19 12:11:53] DELETE_COURSE — Deleted ID=1
+[2026-04-19 21:32:38] ADD_COURSE — Added: svd (3251) | 3 credits | vds
+[2026-04-19 21:32:41] DELETE_COURSE — Deleted ID=1

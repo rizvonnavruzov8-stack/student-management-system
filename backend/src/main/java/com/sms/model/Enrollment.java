@@ -14,9 +14,9 @@ public class Enrollment extends BaseEntity {
     private int studentDbId;   // references Student.id
     private int courseDbId;    // references Course.id
     private String enrollmentDate;
-    private double grade;      // 0-100; -1 = not yet assigned
+    private double grade;      // 0-100;assigned
 
-    // --- Constructors ---
+    // Constructors
 
     public Enrollment() {
         super();
@@ -39,22 +39,31 @@ public class Enrollment extends BaseEntity {
                + ", courseId=" + courseDbId + ", grade=" + grade + "}";
     }
 
-    // --- Getters & Setters ---
+    // Getters & Setters
 
     /** Convenience alias — returns the inherited BaseEntity id */
-    public int getEnrollmentId() { return getId(); }
-    public void setEnrollmentId(int enrollmentId) { setId(enrollmentId); }
+    public int getEnrollmentId() {
+        return getId(); }
+    public void setEnrollmentId(int enrollmentId) {
+        setId(enrollmentId); }
 
-    public int getStudentDbId() { return studentDbId; }
-    public void setStudentDbId(int studentDbId) { this.studentDbId = studentDbId; }
+    public int getStudentDbId() {
+        return studentDbId; }
+    public void setStudentDbId(int studentDbId) {
+        this.studentDbId = studentDbId; }
 
-    public int getCourseDbId() { return courseDbId; }
-    public void setCourseDbId(int courseDbId) { this.courseDbId = courseDbId; }
+    public int getCourseDbId() {
+        return courseDbId; }
+    public void setCourseDbId(int courseDbId) {
+        this.courseDbId = courseDbId; }
 
-    public String getEnrollmentDate() { return enrollmentDate; }
-    public void setEnrollmentDate(String enrollmentDate) { this.enrollmentDate = enrollmentDate; }
+    public String getEnrollmentDate() {
+        return enrollmentDate; }
+    public void setEnrollmentDate(String enrollmentDate) {
+        this.enrollmentDate = enrollmentDate; }
 
-    public double getGrade() { return grade; }
+    public double getGrade() {
+        return grade; }
     public void setGrade(double grade) {
         this.grade = grade;
         this.touch(); // ENCAPSULATION — update audit timestamp on change
