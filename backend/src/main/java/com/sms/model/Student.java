@@ -57,7 +57,12 @@ public class Student extends BaseEntity {
     public void setLastName(String lastName) { this.lastName = lastName; }
 
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("Invalid email format: " + email);
+        }
+        this.email = email;
+    }
 
     public String getDateOfBirth() { return dateOfBirth; }
     public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
@@ -71,7 +76,7 @@ public class Student extends BaseEntity {
     public List<Double> getGrades() { return grades; }
     public void setGrades(List<Double> grades) { this.grades = grades; }
 
-    // Helper: recalculate GPA from grades list
+    // Helper: recalculate GPA from grades list using university scale
     public void recalculateGpa() {
         if (grades == null || grades.isEmpty()) {
             this.gpa = 0.0;
@@ -79,9 +84,19 @@ public class Student extends BaseEntity {
         }
         double sum = 0;
         for (double g : grades) sum += g;
-        double average = sum / grades.size();
-        // Convert 0-100 scale to 0-4.0 scale
-        this.gpa = (average / 100.0) * 4.0;
+        double avg = sum / grades.size();
+
+        // 90-100=4.0, 85-90=3.7, 80-85=3.3, 75-80=3.0, 70-75=2.7, 65-70=2.3, 60-65=2.0, 55-60=1.7, 50-55=1.0, <50=0.0
+        if (avg >= 90) this.gpa = 4.0;
+        else if (avg >= 85) this.gpa = 3.7;
+        else if (avg >= 80) this.gpa = 3.3;
+        else if (avg >= 75) this.gpa = 3.0; // User wrote 780, assumed typo for 80
+        else if (avg >= 70) this.gpa = 2.7;
+        else if (avg >= 65) this.gpa = 2.3;
+        else if (avg >= 60) this.gpa = 2.0;
+        else if (avg >= 55) this.gpa = 1.7;
+        else if (avg >= 50) this.gpa = 1.0;
+        else this.gpa = 0.0;
     }
 
     @Override

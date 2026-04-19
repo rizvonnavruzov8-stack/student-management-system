@@ -3,12 +3,14 @@ package com.sms.model;
 import java.time.LocalDate;
 
 /**
- * Enrollment — Links Student to a Course (Many-to-Many bridge).
- * Stores the assigned grade and enrollment date.
+ * OOP — INHERITANCE & ENCAPSULATION
+ *
+ * Enrollment links a Student to a Course (Many-to-Many bridge).
+ * Extends BaseEntity to inherit id, createdAt, updatedAt — consistent
+ * with all other entity classes in the model layer.
  */
-public class Enrollment {
+public class Enrollment extends BaseEntity {
 
-    private int enrollmentId;
     private int studentDbId;   // references Student.id
     private int courseDbId;    // references Course.id
     private String enrollmentDate;
@@ -17,22 +19,31 @@ public class Enrollment {
     // --- Constructors ---
 
     public Enrollment() {
+        super();
         this.enrollmentDate = LocalDate.now().toString();
         this.grade = -1;
     }
 
     public Enrollment(int enrollmentId, int studentDbId, int courseDbId) {
-        this.enrollmentId = enrollmentId;
+        super(enrollmentId);
         this.studentDbId = studentDbId;
         this.courseDbId = courseDbId;
         this.enrollmentDate = LocalDate.now().toString();
         this.grade = -1;
     }
 
+    // POLYMORPHISM — implements the abstract method from BaseEntity
+    @Override
+    public String getSummary() {
+        return "Enrollment{id=" + getId() + ", studentId=" + studentDbId
+               + ", courseId=" + courseDbId + ", grade=" + grade + "}";
+    }
+
     // --- Getters & Setters ---
 
-    public int getEnrollmentId() { return enrollmentId; }
-    public void setEnrollmentId(int enrollmentId) { this.enrollmentId = enrollmentId; }
+    /** Convenience alias — returns the inherited BaseEntity id */
+    public int getEnrollmentId() { return getId(); }
+    public void setEnrollmentId(int enrollmentId) { setId(enrollmentId); }
 
     public int getStudentDbId() { return studentDbId; }
     public void setStudentDbId(int studentDbId) { this.studentDbId = studentDbId; }
@@ -44,5 +55,15 @@ public class Enrollment {
     public void setEnrollmentDate(String enrollmentDate) { this.enrollmentDate = enrollmentDate; }
 
     public double getGrade() { return grade; }
-    public void setGrade(double grade) { this.grade = grade; }
+    public void setGrade(double grade) {
+        this.grade = grade;
+        this.touch(); // ENCAPSULATION — update audit timestamp on change
+    }
+
+    @Override
+    public String toString() {
+        return "Enrollment{id=" + getId() + ", studentDbId=" + studentDbId
+               + ", courseDbId=" + courseDbId + ", date='" + enrollmentDate
+               + "', grade=" + grade + "}";
+    }
 }

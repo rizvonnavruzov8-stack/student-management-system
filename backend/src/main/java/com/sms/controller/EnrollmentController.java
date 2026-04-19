@@ -54,4 +54,11 @@ public class EnrollmentController {
         double grade = body.get("grade");
         return ResponseEntity.ok(enrollmentService.assignGrade(enrollmentId, grade));
     }
+
+    /** DELETE /api/enrollments/{enrollmentId} — unenroll student */
+    @DeleteMapping("/{enrollmentId}")
+    public ResponseEntity<Void> delete(@PathVariable int enrollmentId) {
+        enrollmentService.deleteEnrollment(enrollmentId);
+        return ResponseEntity.noContent().build();
+    }
 }

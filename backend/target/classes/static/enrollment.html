@@ -46,7 +46,7 @@
         <thead>
           <tr>
             <th>Enrollment #</th><th>Student</th><th>Course</th>
-            <th>Date</th><th>Grade</th><th>Action</th>
+            <th>Date</th><th>Grade</th><th>Actions</th>
           </tr>
         </thead>
         <tbody id="enrollments-body"></tbody>
@@ -111,7 +111,10 @@ function renderTable() {
       <td>${c ? c.courseName : 'Unknown'}</td>
       <td>${e.enrollmentDate}</td>
       <td>${grade}</td>
-      <td><button class="btn btn-success btn-sm" onclick="openGradeModal(${e.enrollmentId})">+ Grade</button></td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-success btn-sm" onclick="openGradeModal(${e.enrollmentId})">+ Grade</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEnrollment(${e.enrollmentId})">Delete</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -143,6 +146,15 @@ async function submitGrade() {
     closeModal('grade-modal');
     await loadAll();
   } catch(e) { toast(e.message || 'Grade assignment failed', 'error'); }
+}
+
+async function deleteEnrollment(enrollmentId) {
+  if (!confirm('Delete this enrollment? This will affect the student\'s GPA.')) return;
+  try {
+    await api(`/api/enrollments/${enrollmentId}`, 'DELETE');
+    toast('Enrollment deleted.');
+    await loadAll();
+  } catch(e) { toast(e.message || 'Delete failed', 'error'); }
 }
 
 loadAll();

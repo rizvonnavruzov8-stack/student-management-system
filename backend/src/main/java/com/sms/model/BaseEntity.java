@@ -41,14 +41,21 @@ public abstract class BaseEntity {
 
     // --- Getters & Setters ---
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id; }
+    public void setId(int id) {
+        this.id = id; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt; }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt; }
 
-    public void touch() { this.updatedAt = LocalDateTime.now(); }
+    public void touch() {
+        this.updatedAt = LocalDateTime.now(); }
 }

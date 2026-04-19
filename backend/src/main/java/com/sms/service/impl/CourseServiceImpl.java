@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * POLYMORPHISM — Implements CourseService interface.
+ * The controller and FileManager depend only on the interface, not this class.
  */
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -34,6 +35,28 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Course updateCourse(int id, Course updated) throws CourseNotFoundException {
+        Course existing = findCourseById(id);
+        existing.setCourseId(updated.getCourseId());
+        existing.setCourseName(updated.getCourseName());
+        existing.setCourseCode(updated.getCourseCode());
+        existing.setCredits(updated.getCredits());
+        existing.setInstructorName(updated.getInstructorName());
+        existing.touch(); // update audit timestamp
+        fileManager.saveCourses(courses);
+        activityLogger.log("UPDATE_COURSE", "Updated ID=" + id);
+        return existing;
+    }
+
+    @Override
+    public void deleteCourse(int id) throws CourseNotFoundException {
+        Course course = findCourseById(id);
+        courses.remove(course);
+        fileManager.saveCourses(courses);
+        activityLogger.log("DELETE_COURSE", "Deleted ID=" + id);
+    }
+
+    @Override
     public List<Course> getAllCourses() {
         return new ArrayList<>(courses);
     }
@@ -46,6 +69,7 @@ public class CourseServiceImpl implements CourseService {
             .orElseThrow(() -> new CourseNotFoundException(id));
     }
 
+    @Override
     public void loadCourses(List<Course> loaded) {
         courses.clear();
         courses.addAll(loaded);
@@ -53,6 +77,7 @@ public class CourseServiceImpl implements CourseService {
         idCounter.set(maxId + 1);
     }
 
+    @Override
     public List<Course> getCoursesRef() {
         return courses;
     }
