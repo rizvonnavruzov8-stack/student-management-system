@@ -27,3 +27,4 @@ public interface CourseService {
     /** Returns the live list reference — used internally by EnrollmentServiceImpl */
     List<Course> getCoursesRef();
 }
+
