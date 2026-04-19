@@ -1,1 +1,1 @@
-1|21|vdsvdfba|132|3|fdsaf
+1|1|Intro to Java|CS-101|6|Dr. Ameen Khan

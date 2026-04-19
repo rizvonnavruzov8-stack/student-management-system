@@ -3,8 +3,8 @@ com/sms/exception/InvalidGradeException.class
 com/sms/model/Enrollment.class
 com/sms/util/FileManager.class
 com/sms/controller/EnrollmentController.class
-com/sms/service/StudentService.class
 com/sms/model/GraduateStudent.class
+com/sms/service/StudentService.class
 com/sms/exception/CourseNotFoundException.class
 com/sms/service/impl/EnrollmentServiceImpl.class
 com/sms/service/EnrollmentService.class

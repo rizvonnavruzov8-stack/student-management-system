@@ -2,3 +2,10 @@
 [2026-04-14 02:07:25] ADD_COURSE — Added: vdsvdfba (132) | 3 credits | fdsaf
 [2026-04-14 02:07:30] ENROLL — Student ID=1 → Course ID=1
 [2026-04-14 02:07:40] GRADE — Enrollment ID=1 grade=87.0
+[2026-04-19 12:30:44] ADD_STUDENT — Added: John Doe (STU-002) | GPA: 0.00
+[2026-04-19 14:01:58] DELETE_STUDENT — Deleted ID=2
+[2026-04-19 14:02:48] ADD_STUDENT — Added: John Doe (02) | GPA: 0.00
+[2026-04-19 14:03:14] UPDATE_STUDENT — Updated ID=3
+[2026-04-19 14:12:00] ADD_COURSE — Added: Intro to Java (CS-101) | 6 credits | Dr. Ameen Khan
+[2026-04-19 14:12:54] UPDATE_STUDENT — Updated ID=3
+[2026-04-19 14:13:04] UPDATE_STUDENT — Updated ID=3

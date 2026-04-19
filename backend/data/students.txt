@@ -1,1 +1,2 @@
 student|1|01|Rizvon|Navruzov|rizvonnavruzov8@gmail.com|2025-12-31|ACTIVE|87.0|87.0||
+student|3|02|John|Doe|johndoe@gmail.com|2000-05-05|ACTIVE|0.0|||
