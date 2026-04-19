@@ -57,7 +57,7 @@ public class EnrollmentController {
 
     /** DELETE /api/enrollments/{enrollmentId} — unenroll student */
     @DeleteMapping("/{enrollmentId}")
-    public ResponseEntity<Void> delete(@PathVariable int enrollmentId) {
+    public ResponseEntity<Void> delete(@PathVariable int enrollmentId) throws StudentNotFoundException {
         enrollmentService.deleteEnrollment(enrollmentId);
         return ResponseEntity.noContent().build();
     }

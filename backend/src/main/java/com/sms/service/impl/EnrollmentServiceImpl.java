@@ -84,7 +84,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public void deleteEnrollment(int enrollmentId) {
+    public void deleteEnrollment(int enrollmentId) throws StudentNotFoundException {
         Enrollment enrollment = enrollments.stream()
             .filter(e -> e.getId() == enrollmentId)
             .findFirst()

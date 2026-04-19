@@ -18,7 +18,7 @@ public interface EnrollmentService {
     Enrollment assignGrade(int enrollmentId, double grade)
         throws InvalidGradeException, StudentNotFoundException;
 
-    void deleteEnrollment(int enrollmentId);
+    void deleteEnrollment(int enrollmentId) throws StudentNotFoundException;
 
     List<Enrollment> getStudentCourses(int studentDbId);
 
